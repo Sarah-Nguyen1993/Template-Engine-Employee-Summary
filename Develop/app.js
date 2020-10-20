@@ -13,6 +13,105 @@ const render = require("./lib/htmlRenderer");
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+const employees = []
+async function employeeInfo() {
+    await inquirer.prompt([
+        {
+            type: "list",
+            name: "role",
+            message: "What type of employee do you want to add?",
+            choices: ["Manager", "Engineer", "Intern", "I don't want to add more team members."]
+        }
+    ]).then(res => {
+        console.log(res)
+        if (res.role === "Manager") {
+            inquirer.prompt([
+                {
+                    type: "loop",
+                    name: "name",
+                    message: "Name: "
+                },
+                {
+                    type: "input",
+                    name: "id",
+                    message: "id: "
+                },
+                {
+                    type: "input",
+                    name: "email",
+                    message: "Email: "
+                },
+                {
+                    type: "input",
+                    name: "officeNumber",
+                    message: "Office number: "
+                }
+            ]).then(res => {
+                employees.push(res);
+                console.log(employees)
+            })
+
+        }
+        else if (res.role === "Engineer") {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "name",
+                    message: "Name: "
+                },
+                {
+                    type: "input",
+                    name: "id",
+                    message: "id: "
+                },
+                {
+                    type: "input",
+                    name: "email",
+                    message: "Email: "
+                },
+                {
+                    type: "input",
+                    name: "github",
+                    message: "GitHub user name: "
+                }
+            ]).then(res => {
+                employees.push(res);
+                console.log(employees)
+            })
+        }
+        else {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "name",
+                    message: "Name: "
+                },
+                {
+                    type: "input",
+                    name: "id",
+                    message: "id: "
+                },
+                {
+                    type: "input",
+                    name: "email",
+                    message: "Email: "
+                },
+                {
+                    type: "input",
+                    name: "school",
+                    message: "Attending school: "
+                }
+            ]).then(res => {
+                employees.push(res);
+                console.log(employees)
+            })
+        }
+    })
+}
+employeeInfo();
+
+
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
