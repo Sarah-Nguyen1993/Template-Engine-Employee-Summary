@@ -9,6 +9,13 @@ This application helps to creat a webpage that contain basic employees' informat
 * Run `node app.js`
 * Answer prompted questions
 * A `team.html` that contains information from inputs will be created.
+
+ 
+    ![demo](./develop/assets/demo.gif)
+
+ 
+ 
+    ![screenshot](./develop/assets/Screenshot.png)
 ## Tech
 * JAVASCRIPT
 * HTML
