@@ -10,10 +10,10 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
+//employees array store employees' info
 const employees = [];
+
+//questions for manager
 const managerQuestions = [
     {
         type: "loop",
@@ -41,6 +41,8 @@ const managerQuestions = [
         message: "Do you have any team member to add?",
     }
 ];
+
+//questions for employees
 const employeeQuestions = [
     {
         type: "input",
@@ -76,68 +78,74 @@ const employeeQuestions = [
             return res.role === "Intern"
         },
         type: "input",
-        name: "github",
+        name: "school",
         message: "Attending school: "
     },
     {
         type: "confirm",
         name: "repeat",
-        message: "Do you want to continue"
+        message: "Do you want to add more members?"
     
     }   
 ];
 
+//start the app by asking manager's info using managerQuestions
 function managerInfo(){
     inquirer.prompt(managerQuestions).then(res =>{
-        var newMember = new Manager(res.name, res.id, res.email, res.officeNumber);
-        employees.push(newMember);
+        const manager = new Manager(res.name, res.id, res.email, res.officeNumber);
+        //push manager to employees array
+        employees.push(manager);
+        //ask if the manager wants to add more members
         if (res.addMember === true){
+            //if yes run employeeInfo()
             employeeInfo();
         }
         else{
-            return;
+            //if no create the html with manager's info
+            fs.writeFile(outputPath,render(employees), function(err){
+                if(err){
+                    throw err
+                }
+                else{
+                    console.log("Successfully created a html")
+                }
+            }) 
         }
     })
 }
-managerInfo()
+
+managerInfo();
+
+//after the manager, ask employees' info by using employeeQuestions
 function employeeInfo(){
     inquirer.prompt(employeeQuestions).then(res => {
         if (res.role === "Engineer"){
-            var newMember = new Engineer(res.name, res.id, res.email, res.github);
+            const engineer = new Engineer(res.name, res.id, res.email, res.github);
+            //push engineer to employees array
+            employees.push(engineer);
         }
         else{
-            var newMember = new Intern(res.name, res.id, res.email, res.school);
+            const intern = new Intern(res.name, res.id, res.email, res.school);
+            //push intern to employees array
+            employees.push(intern);
         }
-
-        employees.push(newMember);
-
+        console.log(employees)
+        //if wants add more members, run employeeInfo()
         if (res.repeat === true){
             employeeInfo();
         }
         else{
-            return;
+            // if not, create html file
+           fs.writeFile(outputPath,render(employees), function(err){
+               if(err){
+                   throw err
+               }
+               else{
+                   console.log("Successfully created a html")
+               }
+           }) 
         }
     })
 }
 
 
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
-
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
