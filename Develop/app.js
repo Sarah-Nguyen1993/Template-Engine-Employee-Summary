@@ -14,139 +14,112 @@ const render = require("./lib/htmlRenderer");
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 const employees = [];
-const employeeTypeQuestion = {
-    type: "list",
-    name: "role",
-    message: "What type of employee do you want to add?",
-    choices: ["Manager", "Engineer", "Intern"]
-};
 const managerQuestions = [
     {
         type: "loop",
         name: "name",
-        message: "Name: "
+        message: "Manager's name: "
     },
     {
         type: "input",
         name: "id",
-        message: "id: "
+        message: "Manager's id: "
     },
     {
         type: "input",
         name: "email",
-        message: "Email: "
+        message: "Manager's email: "
     },
     {
         type: "input",
         name: "officeNumber",
-        message: "Office number: "
+        message: "Manager's office number: "
+    },
+    {
+        type: "confirm",
+        name: "addMember",
+        message: "Do you have any team member to add?",
     }
 ];
-const engineerQuestions = [
+const employeeQuestions = [
     {
         type: "input",
         name: "name",
-        message: "Name: "
+        message: "Employee's name: "
     },
     {
         type: "input",
         name: "id",
-        message: "id: "
+        message: "Employee's id: "
     },
     {
         type: "input",
         name: "email",
-        message: "Email: "
+        message: "Employee's email: "
     },
     {
+        type: "list",
+        name: "role",
+        message: "What is his/her role?",
+        choices: ["Engineer", "Intern"]
+    },
+    {
+        when: res => {
+            return res.role === "Engineer"
+        },
         type: "input",
         name: "github",
         message: "GitHub user name: "
-    }
-];
-const internQuestions = [
-    {
-        type: "input",
-        name: "name",
-        message: "Name: "
     },
     {
+        when: res => {
+            return res.role === "Intern"
+        },
         type: "input",
-        name: "id",
-        message: "id: "
-    },
-    {
-        type: "input",
-        name: "email",
-        message: "Email: "
-    },
-    {
-        type: "input",
-        name: "school",
+        name: "github",
         message: "Attending school: "
-    }
+    },
+    {
+        type: "confirm",
+        name: "repeat",
+        message: "Do you want to continue"
+    
+    }   
 ];
-const repeat = {
-    type: "confirm",
-    name: "repeat",
-    message: "Do you want to continue"
 
-};
-async function employeeInfo() {
-    await inquirer.prompt(employeeTypeQuestion ).then(res => {
-        //console.log(res)
-        if (res.role === "Manager") {
-            inquirer.prompt(managerQuestions).then(res => {
-                employees.push(res);
-                console.log(employees);
-                const manager = new Manager(res.name, res.id, res.email, res.officeNumber) ;
-                console.log(manager)
-                inquirer.prompt(repeat).then(res => {
-                    //console.log(res)
-                        if (res.repeat === true){
-                            employeeInfo()
-                        }
-                        else {
-                            return;
-                        }
-                    })
-            })
+function managerInfo(){
+    inquirer.prompt(managerQuestions).then(res =>{
+        var newMember = new Manager(res.name, res.id, res.email, res.officeNumber);
+        employees.push(newMember);
+        if (res.addMember === true){
+            employeeInfo();
         }
-        else if (res.role === "Engineer") {
-            inquirer.prompt(engineerQuestions).then(res => {
-                employees.push(res);
-                console.log(employees);
-                const engineer = new Engineer(res.name, res.id, res.email, res.github) ;
-                console.log(engineer)
-                inquirer.prompt(repeat).then(res => {
-                    if (res.repeat === true){
-                        employeeInfo()
-                    }
-                    else{
-                        return;
-                    }
-                })
-            })
-        }
-        else {
-            inquirer.prompt(internQuestions).then(res => {
-                employees.push(res);
-                console.log(employees);
-                const intern = new Intern(res.name, res.id, res.email, res.school) ;
-                console.log(intern)
-                inquirer.prompt(repeat).then(res => {
-                    if (res.repeat === true){
-                        employeeInfo()
-                    }
-                    else{
-                        return;
-                    }
-                })
-            })
+        else{
+            return;
         }
     })
 }
-employeeInfo();
+managerInfo()
+function employeeInfo(){
+    inquirer.prompt(employeeQuestions).then(res => {
+        if (res.role === "Engineer"){
+            var newMember = new Engineer(res.name, res.id, res.email, res.github);
+        }
+        else{
+            var newMember = new Intern(res.name, res.id, res.email, res.school);
+        }
+
+        employees.push(newMember);
+
+        if (res.repeat === true){
+            employeeInfo();
+        }
+        else{
+            return;
+        }
+    })
+}
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
