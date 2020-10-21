@@ -129,7 +129,6 @@ function employeeInfo(){
             //push intern to employees array
             employees.push(intern);
         }
-        console.log(employees)
         //if wants add more members, run employeeInfo()
         if (res.repeat === true){
             employeeInfo();
