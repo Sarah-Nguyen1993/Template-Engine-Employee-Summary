@@ -94,21 +94,19 @@ const repeat = {
 };
 async function employeeInfo() {
     await inquirer.prompt(employeeTypeQuestion ).then(res => {
-        console.log(res)
+        //console.log(res)
         if (res.role === "Manager") {
             inquirer.prompt(managerQuestions).then(res => {
                 employees.push(res);
                 console.log(employees);
                 const manager = new Manager(res.name, res.id, res.email, res.officeNumber) ;
                 console.log(manager)
-                manager.getRole();
                 inquirer.prompt(repeat).then(res => {
-                    console.log(res)
-                        if (res.repeat = true){
+                    //console.log(res)
+                        if (res.repeat === true){
                             employeeInfo()
                         }
-                        else if (res.repeat = false){
-                            console.log("no")
+                        else {
                             return;
                         }
                     })
@@ -118,10 +116,10 @@ async function employeeInfo() {
             inquirer.prompt(engineerQuestions).then(res => {
                 employees.push(res);
                 console.log(employees);
-                const engineer = new Engineer(res.name, res.id, res.email, res.officeNumber) ;
+                const engineer = new Engineer(res.name, res.id, res.email, res.github) ;
                 console.log(engineer)
                 inquirer.prompt(repeat).then(res => {
-                    if (res.repeat = true){
+                    if (res.repeat === true){
                         employeeInfo()
                     }
                     else{
@@ -134,10 +132,10 @@ async function employeeInfo() {
             inquirer.prompt(internQuestions).then(res => {
                 employees.push(res);
                 console.log(employees);
-                const intern = new Intern(res.name, res.id, res.email, res.officeNumber) ;
+                const intern = new Intern(res.name, res.id, res.email, res.school) ;
                 console.log(intern)
                 inquirer.prompt(repeat).then(res => {
-                    if (res.repeat = true){
+                    if (res.repeat === true){
                         employeeInfo()
                     }
                     else{
@@ -154,8 +152,6 @@ employeeInfo();
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
 
-const html = render(employees)
-writeFileSync("./output/team.html",html)
 
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
